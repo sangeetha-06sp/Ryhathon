@@ -1,0 +1,34 @@
+{
+  "sizes": {
+    "train": 4795,
+    "val": 1199,
+    "test": 5794
+  },
+  "group_order": [
+    "landbird / land",
+    "landbird / water",
+    "waterbird / land",
+    "waterbird / water"
+  ],
+  "group_counts": {
+    "train": {
+      "landbird / land": 3498,
+      "landbird / water": 184,
+      "waterbird / land": 56,
+      "waterbird / water": 1057
+    },
+    "validation": {
+      "landbird / land": 467,
+      "landbird / water": 466,
+      "waterbird / land": 133,
+      "waterbird / water": 133
+    },
+    "test": {
+      "landbird / land": 2255,
+      "landbird / water": 2255,
+      "waterbird / land": 642,
+      "waterbird / water": 642
+    }
+  },
+  "metadata_sha256": "2f023b9dc371f6fbb82c7cb810ff0f03e19c54c8055a2e37517ae7bb56644362"
+}

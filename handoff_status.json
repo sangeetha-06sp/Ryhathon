@@ -1,0 +1,8 @@
+[
+  {
+    "run": "run01_baseline",
+    "weights": true,
+    "test_complete": true,
+    "paired_audit_complete": false
+  }
+]
