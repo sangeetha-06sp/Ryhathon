@@ -1,0 +1,40 @@
+{
+  "architecture": "resnet18",
+  "class_names": [
+    "landbird",
+    "waterbird"
+  ],
+  "preprocessing": {
+    "size": 224,
+    "mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "std": [
+      0.229,
+      0.224,
+      0.225
+    ],
+    "resize": "full_frame_square",
+    "interpolation": "bilinear"
+  },
+  "run_name": "run01_baseline",
+  "epoch": 5,
+  "seed": 42,
+  "group_balanced_sampling": false,
+  "learning_rate": 0.0001,
+  "weight_decay": 0.0001,
+  "batch_size": 32,
+  "selection_rule": "max val worst-group accuracy; tie min val loss",
+  "dataset_metadata_sha256": "2f023b9dc371f6fbb82c7cb810ff0f03e19c54c8055a2e37517ae7bb56644362",
+  "versions": {
+    "python": "3.13.15",
+    "torch": "2.11.0+cu130",
+    "torchvision": "0.26.0+cu130",
+    "numpy": "2.1.3",
+    "pandas": "2.2.3",
+    "pillow": "11.3.0",
+    "device": "cuda"
+  }
+}

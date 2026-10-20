@@ -1,0 +1,60 @@
+{
+  "n": 1199,
+  "raw_accuracy": 0.8423686405337781,
+  "train_distribution_adjusted_accuracy": 0.9671913548712942,
+  "worst_group_accuracy": 0.5864661654135338,
+  "groups": {
+    "landbird / land": {
+      "n": 467,
+      "correct": 463,
+      "accuracy": 0.9914346895074947,
+      "wilson_ci95": [
+        0.9781858661605939,
+        0.9966642745236619
+      ]
+    },
+    "landbird / water": {
+      "n": 466,
+      "correct": 343,
+      "accuracy": 0.7360515021459227,
+      "wilson_ci95": [
+        0.6942187228532087,
+        0.7740241913544731
+      ]
+    },
+    "waterbird / land": {
+      "n": 133,
+      "correct": 78,
+      "accuracy": 0.5864661654135338,
+      "wilson_ci95": [
+        0.5014897655961853,
+        0.666587778074745
+      ]
+    },
+    "waterbird / water": {
+      "n": 133,
+      "correct": 126,
+      "accuracy": 0.9473684210526315,
+      "wilson_ci95": [
+        0.8953439962165648,
+        0.9742745992982493
+      ]
+    }
+  },
+  "confusion_matrix": [
+    [
+      806,
+      127
+    ],
+    [
+      62,
+      204
+    ]
+  ],
+  "confusion_matrix_order": [
+    "landbird",
+    "waterbird"
+  ],
+  "confusion_matrix_axes": "rows=true label, columns=predicted label",
+  "loss": 0.6008723017769719
+}

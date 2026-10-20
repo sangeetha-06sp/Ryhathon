@@ -1,0 +1,62 @@
+{
+  "n": 5794,
+  "raw_accuracy": 0.8425957887469796,
+  "train_distribution_adjusted_accuracy": 0.9604304153316414,
+  "worst_group_accuracy": 0.5903426791277259,
+  "groups": {
+    "landbird / land": {
+      "n": 2255,
+      "correct": 2218,
+      "accuracy": 0.9835920177383592,
+      "wilson_ci95": [
+        0.9774664143818865,
+        0.988072736304908
+      ]
+    },
+    "landbird / water": {
+      "n": 2255,
+      "correct": 1681,
+      "accuracy": 0.7454545454545455,
+      "wilson_ci95": [
+        0.7270681123235149,
+        0.76300609208285
+      ]
+    },
+    "waterbird / land": {
+      "n": 642,
+      "correct": 379,
+      "accuracy": 0.5903426791277259,
+      "wilson_ci95": [
+        0.551873882047118,
+        0.6277367221629545
+      ]
+    },
+    "waterbird / water": {
+      "n": 642,
+      "correct": 604,
+      "accuracy": 0.940809968847352,
+      "wilson_ci95": [
+        0.9198001628823124,
+        0.9565757162806278
+      ]
+    }
+  },
+  "confusion_matrix": [
+    [
+      3899,
+      611
+    ],
+    [
+      301,
+      983
+    ]
+  ],
+  "confusion_matrix_order": [
+    "landbird",
+    "waterbird"
+  ],
+  "confusion_matrix_axes": "rows=true label, columns=predicted label",
+  "loss": 0.5279811081490333,
+  "run_name": "run01_baseline",
+  "checkpoint_sha256": "e85c27ffd74140388618fba1b9a6d53361e8be6948cca4a7a3dabf6eb804785f"
+}
