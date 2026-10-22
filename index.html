@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShortcutLens AI | Bird Classification</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#090d18;--panel:#111827;--panel2:#151e30;--border:#263247;--text:#edf2ff;--muted:#8b9ab4;--purple:#9585ff;--cyan:#42d9dc;--green:#4bdfad;--red:#ff778a;--yellow:#ffca75}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;font-size:14px}
+button,input,select{font:inherit}button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{width:245px;background:#0d1321;border-right:1px solid var(--border);padding:25px 16px;display:flex;flex-direction:column;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px 30px}
+.logo{width:40px;height:40px;border-radius:13px;display:grid;place-items:center;font-size:21px;color:white;background:linear-gradient(135deg,#7565ff,#37d4d7)}
+.brand h2{font-size:16px;margin:0}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:5px}
+.nav-label{color:#64738d;font-size:10px;font-weight:700;letter-spacing:1.6px;padding:15px 10px 8px}
+.nav{display:flex;align-items:center;gap:12px;padding:12px 13px;color:var(--muted);border-radius:10px;margin:3px 0;background:none;border:1px solid transparent;text-align:left;width:100%}
+.nav:hover,.nav.active{color:white;background:#1b2440;border-color:#34345f}.nav.active{box-shadow:inset 3px 0 var(--purple)}
+.nav-icon{font-size:17px;width:21px;text-align:center}
+.sidebar-bottom{margin-top:auto}
+.status-box{background:#131d2d;border:1px solid var(--border);padding:14px;border-radius:13px;margin-top:20px}
+.status-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--green);margin-right:7px}
+.status-box p{color:var(--muted);font-size:11px;line-height:1.7}
+.main{flex:1;min-width:0}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 30px;border-bottom:1px solid var(--border);background:#0c1220}
+.breadcrumb{color:var(--muted);font-size:12px}.breadcrumb strong{color:var(--text)}
+.top-actions{display:flex;align-items:center;gap:12px}
+.tag{font-size:11px;color:var(--cyan);background:#123039;padding:8px 10px;border-radius:8px}
+.avatar{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:#30285c;color:#d7d0ff;font-weight:700}
+.content{padding:29px 30px;max-width:1600px;margin:auto}
+.page{display:none}.page.active{display:block}
+.heading{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:24px}
+h1{font-size:27px;letter-spacing:-1px;margin:0 0 10px}h2{font-size:16px;margin:0}h3{font-size:13px;margin:0}
+.subtitle{color:var(--muted);line-height:1.7;font-size:12px}
+.btn{padding:11px 15px;border-radius:9px;border:1px solid var(--border);background:#182238;color:var(--text);font-weight:600;font-size:12px}
+.btn:hover{filter:brightness(1.2)}.btn.primary{background:linear-gradient(100deg,#7867fa,#6254dd);border-color:transparent;color:white}
+.btn.cyan{background:#14343a;border-color:#24535b;color:var(--cyan)}
+.grid{display:grid;gap:16px}.stats{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:19px}
+.card{background:linear-gradient(145deg,#141d2d,#101725);border:1px solid var(--border);border-radius:15px;padding:19px;min-width:0}
+.stat-top{display:flex;justify-content:space-between;gap:8px;align-items:center;color:var(--muted);font-size:11px}
+.stat-icon{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#262349;color:var(--purple);font-size:17px}
+.stat-value{font-size:29px;font-weight:800;letter-spacing:-1px;margin:16px 0 7px}.stat-note{font-size:11px;color:var(--muted)}
+.good{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--yellow)}
+.layout-two{grid-template-columns:minmax(0,1.35fr) minmax(290px,1fr)}
+.layout-equal{grid-template-columns:repeat(2,minmax(0,1fr))}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:17px}
+.card-head p{color:var(--muted);font-size:11px;margin:7px 0 0}
+.pill{padding:6px 9px;border-radius:7px;font-size:10px;background:#222c40;color:#aebbd1;white-space:nowrap}
+.pill.green{color:var(--green);background:#12342f}.pill.red{color:var(--red);background:#3b202b}.pill.yellow{color:var(--yellow);background:#3c3020}
+.upload{border:1px dashed #485477;border-radius:12px;min-height:215px;display:flex;align-items:center;justify-content:center;text-align:center;padding:22px;position:relative;overflow:hidden;background:radial-gradient(ellipse at top,#24234a,#111827 65%)}
+.upload.drag{border-color:var(--cyan);background:#142a36}
+.upload input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.upload-inner{pointer-events:none}.upload-icon{font-size:33px;margin-bottom:13px}
+.upload h3{margin-bottom:8px;font-size:14px}.upload p{color:var(--muted);font-size:11px;line-height:1.7}
+.preview-img{max-width:100%;max-height:260px;object-fit:contain;border-radius:9px;display:none}
+.image-meta{color:var(--muted);font-size:11px;margin-top:10px}
+.result-row{display:flex;justify-content:space-between;gap:10px;margin:16px 0 8px;font-size:12px}
+.progress{height:7px;background:#263247;border-radius:10px;overflow:hidden}
+.progress span{display:block;height:100%;border-radius:10px;transition:width .4s}
+.purple{background:var(--purple)}.teal{background:var(--cyan)}.greenbar{background:var(--green)}.redbar{background:var(--red)}.yellowbar{background:var(--yellow)}
+.notice{padding:13px 15px;background:#2d241c;border:1px solid #5a4328;border-radius:10px;color:#ffd69b;font-size:11px;line-height:1.7;margin-top:16px}
+.section-gap{margin-top:19px}canvas{max-height:240px}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;white-space:nowrap;font-size:11px}
+th{text-align:left;color:var(--muted);font-weight:500;padding:13px 10px;border-bottom:1px solid var(--border)}
+td{padding:15px 10px;border-bottom:1px solid #202b3e}tr:last-child td{border-bottom:0}
+.status{display:inline-flex;align-items:center;gap:6px}.status:before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.test-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+select{color:var(--text);background:#172136;border:1px solid var(--border);border-radius:8px;padding:10px;max-width:100%}
+.metric-box{padding:15px;border-radius:10px;background:#0c1423;border:1px solid var(--border)}
+.metric-box strong{display:block;font-size:23px;margin:10px 0}.metric-box small{color:var(--muted);font-size:10px}
+.workflow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.step{padding:11px 14px;background:#182238;border:1px solid var(--border);border-radius:9px;font-size:11px}.arrow{color:var(--purple)}
+.report-list{list-style:none;margin:0;padding:0}
+.report-list li{padding:14px 0;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;gap:12px;font-size:12px}
+.report-list li:last-child{border:0}.report-list span{color:var(--muted)}
+.footer{color:#61708a;text-align:center;font-size:10px;padding:30px 0 10px}
+.toast{position:fixed;bottom:25px;right:25px;background:#1b2a3c;border:1px solid #40516d;border-radius:10px;padding:14px 18px;box-shadow:0 12px 35px #0008;display:none;z-index:10;font-size:12px;max-width:calc(100vw - 35px)}
+.empty-state{padding:28px;text-align:center;color:var(--muted);border:1px dashed var(--border);border-radius:12px;line-height:1.8}
+@media(max-width:1050px){.sidebar{width:200px}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.layout-two{grid-template-columns:1fr}}
+@media(max-width:680px){.app{display:block}.sidebar{width:100%;padding:13px;display:block;border-right:0;border-bottom:1px solid var(--border)}.brand{padding:0 4px 12px}.nav-label,.sidebar-bottom{display:none}.nav-list{display:flex;overflow-x:auto;gap:5px}.nav{width:auto;flex-shrink:0;padding:10px}.nav span:last-child{display:none}.topbar{padding:13px 16px}.top-actions .tag{display:none}.content{padding:22px 14px}h1{font-size:23px}.heading{flex-direction:column}.stats{gap:10px}.stat-value{font-size:24px}.card{padding:15px}.layout-equal{grid-template-columns:1fr}.heading>.btn{align-self:flex-start}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">⌁</div><div><h2>ShortcutLens AI</h2><small>BIRD CLASSIFICATION LAB</small></div></div>
+  <div class="nav-label">WORKSPACE</div>
+  <nav class="nav-list">
+    <button class="nav active" data-page="overview"><span class="nav-icon">◫</span><span>Overview</span></button>
+    <button class="nav" data-page="analysis"><span class="nav-icon">⌕</span><span>Bird Image Analysis</span></button>
+    <button class="nav" data-page="testing"><span class="nav-icon">⇄</span><span>Shortcut Tests</span></button>
+    <button class="nav" data-page="reports"><span class="nav-icon">▤</span><span>Reports</span></button>
+  </nav>
+  <div class="sidebar-bottom"><div class="nav-label">SYSTEM</div><div class="status-box"><div><span class="status-dot"></span><strong style="font-size:11px">Interface ready</strong></div><p>Frontend demo mode.<br>Model connection not configured.</p></div></div>
+</aside>
+<main class="main">
+<header class="topbar"><div class="breadcrumb">Workspace &nbsp;/&nbsp; <strong id="crumb">Overview</strong></div><div class="top-actions"><span class="tag">BIRD CLASSIFICATION ONLY</span><div class="avatar">SL</div></div></header>
+<div class="content">
+<section class="page active" id="overview">
+  <div class="heading"><div><h1>Bird Classification Overview</h1><div class="subtitle">Evaluate whether a bird image classifier relies on the bird itself or on background shortcuts.</div></div><button class="btn primary" onclick="showPage('analysis')">Analyze a bird image →</button></div>
+  <div class="grid stats">
+    <div class="card"><div class="stat-top"><span>CLASSIFICATION DOMAIN</span><span class="stat-icon">♧</span></div><div class="stat-value">Birds</div><div class="stat-note">Only bird classification is enabled</div></div>
+    <div class="card"><div class="stat-top"><span>EXAMPLE CONFIDENCE</span><span class="stat-icon">◉</span></div><div class="stat-value">91%</div><div class="stat-note">Illustrative demo value only</div></div>
+    <div class="card"><div class="stat-top"><span>SHORTCUT RISK</span><span class="stat-icon">⌁</span></div><div class="stat-value warn">Unverified</div><div class="stat-note">Requires real model testing</div></div>
+    <div class="card"><div class="stat-top"><span>MODEL STATUS</span><span class="stat-icon">⟳</span></div><div class="stat-value">Demo</div><div class="stat-note">No trained classifier connected</div></div>
+  </div>
+  <div class="grid layout-two">
+    <div class="card"><div class="card-head"><div><h2>Bird vs. Background Evidence</h2><p>Illustrative evidence scores, not actual model explanations</p></div><span class="pill">EXAMPLE DATA</span></div><canvas id="relianceChart"></canvas><div class="notice">These values are examples for the interface. They do not prove that a classifier uses the bird or the background.</div></div>
+    <div class="card"><div class="card-head"><div><h2>Audit Workflow</h2><p>How to test a bird classifier</p></div></div><div class="workflow"><div class="step">1. Upload bird image</div><span class="arrow">→</span><div class="step">2. Change background</div><span class="arrow">→</span><div class="step">3. Compare predictions</div></div><div class="section-gap"><div class="result-row"><span>Bird identity</span><span class="good">Keep constant</span></div><div class="progress"><span class="greenbar" style="width:100%"></span></div><div class="result-row"><span>Background</span><span class="warn">Intervene</span></div><div class="progress"><span class="yellowbar" style="width:65%"></span></div><div class="result-row"><span>Prediction shift</span><span class="warn">Measure</span></div><div class="progress"><span class="purple" style="width:45%"></span></div></div><button class="btn cyan" style="margin-top:20px" onclick="showPage('testing')">Open shortcut tests →</button></div>
+  </div>
+  <div class="card section-gap"><div class="card-head"><div><h2>Recent Bird Classification Tests</h2><p>Sample records shown for demonstration</p></div><button class="btn" onclick="showPage('reports')">View report</button></div><div class="table-wrap"><table><thead><tr><th>TEST ID</th><th>DOMAIN</th><th>TEST TYPE</th><th>STATUS</th><th>RESULT</th></tr></thead><tbody><tr><td>BRD-001</td><td>Bird classification</td><td>Original image</td><td><span class="status good">Demo</span></td><td>91% example confidence</td></tr><tr><td>BRD-002</td><td>Bird classification</td><td>Background change</td><td><span class="status warn">Illustrative</span></td><td>54% example confidence</td></tr><tr><td>BRD-003</td><td>Bird classification</td><td>Bird masking</td><td><span class="status warn">Illustrative</span></td><td>21% example confidence</td></tr></tbody></table></div></div>
+</section>
+<section class="page" id="analysis">
+  <div class="heading"><div><h1>Bird Image Analysis</h1><div class="subtitle">Upload a bird image and preview the classification interface. The current version uses simulated example values.</div></div><span class="pill">BIRD ONLY</span></div>
+  <div class="grid layout-two">
+    <div class="card"><div class="card-head"><div><h2>Upload Bird Image</h2><p>Choose a JPG, PNG, or WebP image up to 10 MB</p></div></div><div class="upload" id="dropzone"><input type="file" id="imageInput" accept="image/*"><div class="upload-inner" id="uploadPrompt"><div class="upload-icon">♧</div><h3>Drop a bird image here</h3><p>or click to browse your files</p></div><img id="preview" class="preview-img" alt="Uploaded bird preview"></div><div class="image-meta" id="imageMeta">No image selected</div><div class="test-controls"><button class="btn primary" onclick="runDemo()">Run demo classification</button><button class="btn" onclick="resetAnalysis()">Reset</button></div><div class="notice">Demo mode: uploading an image does not run an actual AI model. Connect a trained bird classifier to get genuine predictions.</div></div>
+    <div class="card"><div class="card-head"><div><h2>Classification Result</h2><p>Prediction and evidence summary</p></div><span class="pill yellow" id="modelBadge">WAITING</span></div><div id="predictionEmpty" class="empty-state">Upload a bird image, then select <strong>Run demo classification</strong> to see example output.</div><div id="predictionResult" style="display:none"><div class="metric-box"><small>PREDICTED CLASS</small><strong id="className">Bird (example)</strong><span class="subtitle">Confidence: <b id="confidence">91%</b></span><div class="progress" style="margin-top:12px"><span id="confidenceBar" class="purple" style="width:91%"></span></div></div><div class="result-row"><span>Bird-related evidence</span><strong id="objectScore">68%</strong></div><div class="progress"><span id="objectBar" class="greenbar" style="width:68%"></span></div><div class="result-row"><span>Background-related evidence</span><strong id="backgroundScore">32%</strong></div><div class="progress"><span id="backgroundBar" class="teal" style="width:32%"></span></div><p class="subtitle" id="predictionNote">Example only.</p></div></div>
+  </div>
+  <div class="card section-gap"><div class="card-head"><div><h2>Analysis Interpretation</h2><p>What the evidence can and cannot tell you</p></div></div><div class="grid layout-equal"><div class="metric-box"><small>OBJECT EVIDENCE</small><strong class="good">Bird features</strong><span class="subtitle">A robust classifier should respond to meaningful bird characteristics.</span></div><div class="metric-box"><small>BACKGROUND EVIDENCE</small><strong class="warn">Habitat context</strong><span class="subtitle">A model may learn correlations between bird species and their typical habitats.</span></div></div></div>
+</section>
+<section class="page" id="testing">
+  <div class="heading"><div><h1>Bird Shortcut Tests</h1><div class="subtitle">Explore controlled checks for background dependence in bird image classification.</div></div><span class="pill">SIMULATED SCENARIOS</span></div>
+  <div class="grid layout-two">
+    <div class="card"><div class="card-head"><div><h2>Intervention Scenario</h2><p>Example confidence values for demonstration only</p></div></div><div class="metric-box"><small>ORIGINAL BIRD IMAGE</small><strong id="originalPred">92%</strong><span class="subtitle">Illustrative confidence</span></div><div class="metric-box section-gap"><small>SAME BIRD, CHANGED BACKGROUND</small><strong id="changedPred" class="warn">54%</strong><span class="subtitle">Illustrative confidence after a hypothetical background change</span></div><div class="result-row"><span>Confidence shift</span><strong id="shiftValue">38 percentage points</strong></div><div class="progress"><span id="shiftBar" class="yellowbar" style="width:38%"></span></div><p class="subtitle section-gap">A large change may indicate sensitivity to the background, but it does not alone establish shortcut reliance.</p><button class="btn primary" style="margin-top:15px" onclick="simulateTest()">Run illustrative scenario ↻</button></div>
+    <div class="card"><div class="card-head"><div><h2>Intervention Comparison</h2><p>Example confidence values, not model outputs</p></div></div><canvas id="interventionChart"></canvas><div class="section-gap"><div class="result-row"><span>Same bird, new background</span><span class="warn">Sensitivity check</span></div><div class="result-row"><span>Same background, different bird</span><span class="warn">Control check</span></div><div class="result-row"><span>New bird habitat</span><span class="warn">Generalization check</span></div></div></div>
+  </div>
+  <div class="card section-gap"><div class="card-head"><div><h2>Recommended Test Protocol</h2><p>Use matched images and record every intervention.</p></div></div><div class="table-wrap"><table><thead><tr><th>EXPERIMENT</th><th>KEEP CONSTANT</th><th>CHANGE</th><th>MEASURE</th></tr></thead><tbody><tr><td>Background swap</td><td>Bird identity</td><td>Background</td><td>Class and confidence shift</td></tr><tr><td>Bird masking</td><td>Background</td><td>Bird visibility</td><td>Prediction change</td></tr><tr><td>Bird-habitat shift</td><td>Bird species</td><td>Environment</td><td>Accuracy and calibration</td></tr><tr><td>Matched controls</td><td>Experimental setup</td><td>One factor at a time</td><td>Difference vs. control</td></tr></tbody></table></div></div>
+</section>
+<section class="page" id="reports">
+  <div class="heading"><div><h1>Release Readiness Report</h1><div class="subtitle">A transparent summary of what has been tested and what remains unknown.</div></div><button class="btn primary" onclick="window.print()">Export / Print report</button></div>
+  <div class="grid layout-equal"><div class="card"><div class="card-head"><div><h2>Evaluation Status</h2><p>Current frontend demonstration</p></div></div><div class="metric-box"><small>RELEASE RECOMMENDATION</small><strong class="warn">Not evaluated</strong><span class="subtitle">No real model has been connected.</span></div><div class="section-gap"><div class="result-row"><span>Real model inference</span><span class="pill red">Missing</span></div><div class="result-row"><span>Controlled interventions</span><span class="pill yellow">Pending</span></div><div class="result-row"><span>Independent test dataset</span><span class="pill yellow">Pending</span></div><div class="result-row"><span>Reproducible metrics</span><span class="pill red">Missing</span></div></div></div><div class="card"><div class="card-head"><div><h2>Next Steps</h2><p>Required before a genuine release decision</p></div></div><ul class="report-list"><li><strong>1. Connect a trained bird classifier</strong><span>API</span></li><li><strong>2. Prepare paired bird images</strong><span>Dataset</span></li><li><strong>3. Run background interventions</strong><span>Experiment</span></li><li><strong>4. Compare accuracy and confidence</strong><span>Metrics</span></li><li><strong>5. Validate on unseen habitats</strong><span>Audit</span></li></ul></div></div>
+  <div class="card section-gap"><h2>Report Methodology</h2><p class="subtitle">A robust audit should report baseline accuracy, intervention-specific prediction changes, subgroup or domain performance, and uncertainty. Thresholds for release should be defined before evaluation. A single attribution visualization or high test accuracy is not sufficient evidence of robustness.</p></div>
+</section>
+<div class="footer">SHORTCUTLENS AI · Bird Classification · Frontend Prototype</div>
+</div>
+</main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+let relianceChart,interventionChart,currentImageURL=null,scenarioIndex=0;
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav').forEach(n=>n.classList.remove('active'));
+  $(name).classList.add('active');
+  const nav=document.querySelector(`[data-page="${name}"]`);
+  if(nav)nav.classList.add('active');
+  $('crumb').textContent=nav?nav.innerText.trim():name;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('.nav').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
+
+function notify(message){
+  const toast=$('toast');
+  toast.textContent=message;
+  toast.style.display='block';
+  clearTimeout(notify.timer);
+  notify.timer=setTimeout(()=>toast.style.display='none',3500);
+}
+
+function initCharts(){
+  if(!window.Chart){notify('Charts require an internet connection to load Chart.js.');return;}
+  Chart.defaults.color='#8b9ab4';
+  Chart.defaults.font.family='Inter';
+  relianceChart=new Chart($('relianceChart'),{
+    type:'bar',
+    data:{
+      labels:['BirdVision A','BirdVision B','BirdVision C','BirdVision D'],
+      datasets:[
+        {label:'Bird-related evidence',data:[72,64,81,76],backgroundColor:'#9585ff',borderRadius:5},
+        {label:'Background-related evidence',data:[28,36,19,24],backgroundColor:'#42d9dc',borderRadius:5}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:true,plugins:{legend:{position:'bottom',labels:{boxWidth:9,boxHeight:9,padding:18}}},scales:{x:{grid:{display:false},ticks:{font:{size:10}}},y:{beginAtZero:true,max:100,grid:{color:'#263247'},title:{display:true,text:'Illustrative evidence score'}}}}
+  });
+  interventionChart=new Chart($('interventionChart'),{
+    type:'bar',
+    data:{labels:['Original','New background','Bird masked'],datasets:[{label:'Confidence (%)',data:[92,54,21],backgroundColor:['#9585ff','#ffca75','#ff778a'],borderRadius:6}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{grid:{display:false}},y:{beginAtZero:true,max:100,grid:{color:'#263247'},title:{display:true,text:'Illustrative confidence (%)'}}}}
+  });
+}
+initCharts();
+
+$('imageInput').addEventListener('change',e=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  if(!file.type.startsWith('image/')){notify('Please select a valid image file.');return;}
+  if(file.size>10*1024*1024){notify('Please choose an image smaller than 10 MB.');e.target.value='';return;}
+  if(currentImageURL)URL.revokeObjectURL(currentImageURL);
+  currentImageURL=URL.createObjectURL(file);
+  $('preview').src=currentImageURL;
+  $('preview').style.display='block';
+  $('uploadPrompt').style.display='none';
+  $('imageMeta').textContent=file.name+' · '+(file.size/1024).toFixed(1)+' KB';
+  notify('Image loaded. Run the demo to preview the interface.');
+});
+
+const dropzone=$('dropzone');
+dropzone.addEventListener('dragover',e=>{e.preventDefault();dropzone.classList.add('drag');});
+dropzone.addEventListener('dragleave',()=>dropzone.classList.remove('drag'));
+dropzone.addEventListener('drop',e=>{
+  e.preventDefault();dropzone.classList.remove('drag');
+  const file=e.dataTransfer.files[0];
+  if(!file||!file.type.startsWith('image/')){notify('Drop a valid image file.');return;}
+  if(file.size>10*1024*1024){notify('Maximum image size is 10 MB.');return;}
+  const input=$('imageInput'),dt=new DataTransfer();
+  dt.items.add(file);input.files=dt.files;input.dispatchEvent(new Event('change'));
+});
+
+function runDemo(){
+  if(!$('preview').src||$('preview').style.display==='none'){notify('Upload a bird image first.');return;}
+  const demo={name:'Bird (example)',confidence:91,object:68,bg:32};
+  $('predictionEmpty').style.display='none';
+  $('predictionResult').style.display='block';
+  $('modelBadge').textContent='SIMULATED';
+  $('className').textContent=demo.name;
+  $('confidence').textContent=demo.confidence+'%';
+  $('confidenceBar').style.width=demo.confidence+'%';
+  $('objectScore').textContent=demo.object+'%';
+  $('objectBar').style.width=demo.object+'%';
+  $('backgroundScore').textContent=demo.bg+'%';
+  $('backgroundBar').style.width=demo.bg+'%';
+  $('predictionNote').textContent='Illustrative UI values only. No classifier, saliency method or background intervention has been executed.';
+  notify('Demo preview generated. These are not actual AI predictions.');
+}
+
+function resetAnalysis(){
+  if(currentImageURL){URL.revokeObjectURL(currentImageURL);currentImageURL=null;}
+  $('imageInput').value='';
+  $('preview').removeAttribute('src');
+  $('preview').style.display='none';
+  $('uploadPrompt').style.display='block';
+  $('imageMeta').textContent='No image selected';
+  $('predictionEmpty').style.display='block';
+  $('predictionResult').style.display='none';
+  $('modelBadge').textContent='WAITING';
+  notify('Analysis reset.');
+}
+
+const scenarios=[
+  {original:92,changed:54,masked:21},
+  {original:88,changed:81,masked:26},
+  {original:95,changed:39,masked:17},
+  {original:84,changed:79,masked:24}
+];
+function simulateTest(){
+  scenarioIndex=(scenarioIndex+1)%scenarios.length;
+  const s=scenarios[scenarioIndex],shift=Math.abs(s.original-s.changed);
+  $('originalPred').textContent=s.original+'%';
+  $('changedPred').textContent=s.changed+'%';
+  $('shiftValue').textContent=shift+' percentage points';
+  $('shiftBar').style.width=shift+'%';
+  if(interventionChart){interventionChart.data.datasets[0].data=[s.original,s.changed,s.masked];interventionChart.update();}
+  notify('Illustrative scenario changed. Connect a model for real results.');
+}
+</script>
+</body>
+</html>
